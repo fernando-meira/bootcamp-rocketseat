@@ -1,26 +1,30 @@
-const express = require("express")
+const express = require("express");
+const { v4: uuidv4 } = require("uuid");
 
-const app = express()
-app.use(express.json())
+const app = express();
+app.use(express.json());
 
-const projects = [
-  { name: "React", owner: "Fernando" },
-  { name: "React Native", owner: "Fernando Meira" },
-]
+const projects = [];
 
 app.get("/projects", (request, response) => {
-  return response.json(projects)
-})
+  return response.json(projects);
+});
 
 app.post("/projects", (request, response) => {
-  const project = request.body
+  const { title, owner } = request.body;
 
-  projects.push(project)
-  console.log(projects)
+  const project = {
+    id: uuidv4(),
+    title,
+    owner,
+  };
 
-  return response.status(200).json(project)
-})
+  projects.push(project);
+  console.log(project);
+
+  return response.status(200).json(project);
+});
 
 app.listen(3333, () => {
-  console.log("Go! 👀")
-})
+  console.log("Go! 👀");
+});
