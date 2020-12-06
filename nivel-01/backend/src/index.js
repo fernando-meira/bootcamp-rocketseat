@@ -9,19 +9,19 @@ const projects = [];
 app.get("/projects", (request, response) => {
   const { title } = request.query;
 
-  const results = title
+  const result = title
     ? projects.filter((project) => project.title.includes(title))
     : projects;
 
-  return response.json(results);
+  return response.status(200).json(result);
 });
 
 app.post("/projects", (request, response) => {
   const { title, owner } = request.body;
 
   const project = {
-    owner,
     title,
+    owner,
     id: uuidv4(),
   };
 
@@ -39,13 +39,13 @@ app.put("/projects/:id", (request, response) => {
   if (projectIndex < 0) {
     return response
       .status(404)
-      .json({ success: false, error: "Project not found." });
+      .json({ success: false, error: "Project not found" });
   }
 
   const project = {
-    id,
     title,
     owner,
+    id,
   };
 
   projects[projectIndex] = project;
@@ -60,17 +60,17 @@ app.delete("/projects/:id", (request, response) => {
 
   const projectIndex = projects.findIndex((project) => project.id === id);
 
-  console.log(projectIndex);
-
   if (projectIndex < 0) {
     return response
-      .status(400)
+      .status(404)
       .json({ success: false, error: "Project not found." });
   }
 
   projects.splice(projectIndex, 1);
 
-  return response.status(200).send();
+  return response
+    .status(204)
+    .json({ success: true, message: "Deleted project." });
 });
 
 app.listen(3333, () => {
