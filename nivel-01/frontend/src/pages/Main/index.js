@@ -12,7 +12,6 @@ const Main = () => {
     try {
       const { data } = await api.get("projects")
 
-      console.log("data", data)
       setProjects(data)
     } catch (error) {
       console.log(error)
@@ -23,8 +22,22 @@ const Main = () => {
     fetchProjects()
   }, [])
 
-  const handleAddProjects = useCallback(() => {
-    setProjects([...projects, `newProject ${Date.now()}`])
+  const handleAddProjects = useCallback(async () => {
+    const newProject = {
+      title: `New Project ${Date.now()}`,
+      url: "https://github.com/fernando-meira",
+      techs: ["Node", "Express", "TypeScript"],
+    }
+
+    try {
+      const { data } = await api.post("projects", {
+        ...newProject,
+      })
+
+      setProjects([...projects, data])
+    } catch (error) {
+      console.log(error)
+    }
   }, [projects])
 
   return (
