@@ -7,6 +7,7 @@ import { Container } from "./styles"
 
 const Main = () => {
   const [projects, setProjects] = useState([])
+  const [newProject, setNewProject] = useState("")
 
   const fetchProjects = useCallback(async () => {
     try {
@@ -18,27 +19,33 @@ const Main = () => {
     }
   }, [])
 
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault()
+
+      const project = {
+        title: newProject,
+        url: "https://github.com/fernando-meira",
+        techs: ["Node", "Express", "TypeScript"],
+      }
+
+      try {
+        const { data } = await api.post("projects", {
+          ...project,
+        })
+
+        setProjects([...projects, data])
+        setNewProject("")
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [projects, newProject]
+  )
+
   useEffect(() => {
     fetchProjects()
   }, [])
-
-  const handleAddProjects = useCallback(async () => {
-    const newProject = {
-      title: `New Project ${Date.now()}`,
-      url: "https://github.com/fernando-meira",
-      techs: ["Node", "Express", "TypeScript"],
-    }
-
-    try {
-      const { data } = await api.post("projects", {
-        ...newProject,
-      })
-
-      setProjects([...projects, data])
-    } catch (error) {
-      console.log(error)
-    }
-  }, [projects])
 
   return (
     <Container>
@@ -50,9 +57,15 @@ const Main = () => {
         ))}
       </ul>
 
-      <button type="button" onClick={handleAddProjects}>
-        Add new project
-      </button>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={newProject}
+          onChange={(e) => setNewProject(e.target.value)}
+        />
+
+        <button type="submit">Adicionar</button>
+      </form>
     </Container>
   )
 }

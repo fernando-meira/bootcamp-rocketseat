@@ -1,10 +1,12 @@
 import React from "react"
 
+import { Container } from "./styles"
+
 export default function Header({ title, children }) {
   return (
-    <header>
+    <Container>
       <h1>{title}</h1>
       {children}
-    </header>
+    </Container>
   )
 }
