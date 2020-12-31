@@ -1,14 +1,36 @@
-import React from 'react';
-import {View, Text, StyleSheet, StatusBar} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Text,
+  FlatList,
+  StatusBar,
+  StyleSheet,
+  SafeAreaView,
+} from 'react-native';
+
+import api from './services/api';
 
 function App() {
+  const [repositories, setRepositories] = useState([]);
+
+  useEffect(() => {
+    api.get('repositories').then((response) => {
+      setRepositories(response.data);
+    });
+  }, []);
+
   return (
     <>
       <StatusBar barStyle="light-content" />
 
-      <View style={styles.container}>
-        <Text style={styles.title}>Hello World</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={repositories}
+          keyExtractor={(repository) => repository.id}
+          renderItem={({item: repository}) => (
+            <Text style={styles.title}>{repository.title}</Text>
+          )}
+        />
+      </SafeAreaView>
     </>
   );
 }
@@ -16,8 +38,6 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#7159c1',
   },
   title: {
