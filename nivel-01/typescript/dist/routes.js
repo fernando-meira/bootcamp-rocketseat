@@ -18,8 +18,7 @@ function helloWorld(request, response) {
             { title: "NodeJS", experience: 65 }
         ]
     });
-    console.log(user);
-    return response.json({ message: "Hello World" });
+    return response.json({ message: "Hello World", user: user });
 }
 exports.helloWorld = helloWorld;
 ;
